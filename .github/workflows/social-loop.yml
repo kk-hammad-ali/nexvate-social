@@ -1,0 +1,62 @@
+name: social-loop
+
+# The automatic publisher. GitHub's cron can't be relied on (it never fired for
+# this repo), so one run stays up and checks every 5 minutes, then starts its
+# own successor before the 6-hour job limit. Each check runs publish.py, which
+# only acts on what's due and records everything in state/published.json, so
+# nothing is ever posted twice. Once an hour it also hands newly in-range posts
+# to Facebook's own scheduler.
+#
+# The hourly cron below is only a backup starter in case the chain ever breaks.
+# The concurrency group keeps it to one loop running and at most one queued.
+# Hold everything: set the repo variable PAUSED=1.
+on:
+  schedule:
+    - cron: "7 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: social-loop
+  cancel-in-progress: false
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+      PAUSED: ${{ vars.PAUSED }}
+      LOOP_MINUTES: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish every 5 minutes
+        run: |
+          git config user.name "nexvate-bot"
+          git config user.email "actions@users.noreply.github.com"
+          end=$(( $(date +%s) + LOOP_MINUTES * 60 ))
+          while [ "$(date +%s)" -lt "$end" ]; do
+            git pull -q --rebase || true
+            echo "::group::check $(date -u +%FT%TZ)"
+            python3 scripts/publish.py || true
+            if [ "$(date -u +%M)" -lt 5 ]; then python3 scripts/schedule_facebook.py --apply || true; fi
+            echo "::endgroup::"
+            git add state/published.json
+            if ! git diff --cached --quiet; then
+              git commit -qm "state: published $(date -u +%FT%TZ)"
+              for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
+            fi
+            now=$(date +%s)
+            sleep $(( 300 - now % 300 + 5 ))
+          done
+      - name: Start the next loop
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run social-loop.yml -R "${{ github.repository }}"

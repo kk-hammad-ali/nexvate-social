@@ -1,21 +1,10 @@
 name: social-publish
 
-# NEXVATE launch-30. Times are UTC (Dubai is UTC+4, no DST).
-#   05:00        09:00 GST daily Highlight Story
-#   16:00 Sun-Thu / 15:00 Fri / 08:00 Sat   feed post, then its push Story +30 min
-# Each slot has follow-up runs because GitHub's cron can start late. publish.py
-# records every post in state/published.json, so a re-run never duplicates.
+# Manual commands for NEXVATE launch-30. Automatic publishing lives in
+# social-loop.yml, which checks every 5 minutes. This workflow has no cron, so
+# the two never publish at the same moment. Each run also makes sure the loop
+# is up and restarts it if the chain has broken.
 on:
-  schedule:
-    - cron: "0,20,40 5 * * *"
-    - cron: "0,15,35,50 16 * * 0-4"
-    - cron: "20 17 * * 0-4"
-    - cron: "0,15,35,50 15 * * 5"
-    - cron: "20 16 * * 5"
-    - cron: "0,15,35,50 8 * * 6"
-    - cron: "20 9 * * 6"
-    - cron: "*/10 18,19 * * *"   # TEMP: checking schedule triggers fire
-    - cron: "10 3 * * *"          # daily: hand newly in-range posts to Facebook's scheduler
   workflow_dispatch:
     inputs:
       mode:
@@ -27,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: social-publish
@@ -47,9 +37,6 @@ jobs:
       - name: Run
         run: |
           mode="${{ inputs.mode }}"
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            if [ "${{ github.event.schedule }}" = "10 3 * * *" ]; then mode=schedule-facebook; else mode=publish; fi
-          fi
           case "$mode" in
             publish)           python3 scripts/publish.py ;;
             schedule-facebook) python3 scripts/schedule_facebook.py --apply ;;
@@ -71,3 +58,13 @@ jobs:
             git commit -m "state: published $(date -u +%FT%TZ)"
             for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done
           fi
+      - name: Make sure the loop is running
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=0
+          for st in in_progress queued; do
+            n=$(( n + $(gh run list -R "${{ github.repository }}" -w social-loop.yml -s $st --json databaseId -q length) ))
+          done
+          if [ "$n" -eq 0 ]; then gh workflow run social-loop.yml -R "${{ github.repository }}"; echo "loop restarted"; else echo "loop running"; fi
