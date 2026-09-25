@@ -2,9 +2,10 @@
 """Build state/schedule.json from content/posts.py.
 
 Launch is Friday 25 September 2026. Days 1, 3 and 4 go up together that
-evening, a minute apart, so the grid opens on a full row. The day-2 Reel follows
-on the 26th and every later plan day runs one calendar day early (day 5 on the
-27th ... day 30 on 22 October). Every post gets a Dubai-time slot picked for
+evening, a minute apart, so the grid opens on a full row. After that it's one
+plan day per calendar day in content/posts.py SEQUENCE order: the plan order,
+with the four Reels moved to 10, 13, 16 and 19 October to leave time to shoot
+them. Day 30 lands on 22 October. Every post gets a Dubai-time slot picked for
 when a UAE audience is actually on Instagram and Facebook:
 
   Mon-Thu  20:00  after work and the commute - the evening scroll peak
@@ -31,7 +32,7 @@ from datetime import date, datetime, time, timedelta, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "content"))
-from posts import FEED_DAYS, LAUNCH, POSTS, REELS, link  # noqa: E402
+from posts import FEED_DAYS, LAUNCH, POSTS, REELS, SEQUENCE, link  # noqa: E402
 from stories import AM, ASK  # noqa: E402
 
 DAY1 = date(2026, 9, 25)
@@ -45,10 +46,10 @@ FB_PAGE_ID = "1201189833088043"    # Nexvate
 
 
 def cal_date(day):
-    """Calendar date of a plan day: launch trio on DAY1, the day-2 Reel next."""
+    """Calendar date of a plan day: the launch trio on DAY1, then SEQUENCE."""
     if day in LAUNCH:
         return DAY1
-    return DAY1 + timedelta(days=1 if day == 2 else day - 3)
+    return DAY1 + timedelta(days=1 + SEQUENCE.index(day))
 
 
 def post_time(day):

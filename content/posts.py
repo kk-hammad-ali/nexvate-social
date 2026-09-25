@@ -735,7 +735,21 @@ REELS = {
     26: dict(pillar="Engagement", topic="Day-in-the-life / behind the scenes", plan_bg="cloud"),
 }
 LAUNCH = [1, 3, 4]   # posted together on launch day, in this order
-FEED_DAYS = LAUNCH + sorted(d for d in [p["day"] for p in POSTS] + list(REELS) if d not in LAUNCH)
+
+# Reels need ~2 weeks to shoot and edit, so they come later than in the plan.
+# Value = calendar slot after launch day (0 = the day after launch).
+# 14 = Sat 10 Oct, 17 = Tue 13 Oct, 20 = Fri 16 Oct, 23 = Mon 19 Oct. Day 30,
+# the closing CTA, is still the last post.
+REEL_SLOTS = {2: 14, 12: 17, 18: 20, 26: 23}
+
+# One plan day per calendar day after launch: the plan order without the
+# Reels, with each Reel dropped into its slot.
+SEQUENCE = [d for d in range(1, 31) if d not in LAUNCH and d not in REELS]
+for _d, _i in sorted(REEL_SLOTS.items(), key=lambda kv: kv[1]):
+    SEQUENCE.insert(_i, _d)
+
+_feed = {p["day"] for p in POSTS} | set(REELS)
+FEED_DAYS = LAUNCH + [d for d in SEQUENCE if d in _feed]
 
 
 def is_centre(day):
