@@ -5,9 +5,10 @@ For each id, in the order given: delete the Instagram media and the Facebook
 post, clear its record in state/published.json, then publish it again on both.
 Used when the design changes after a post has gone live.
 
-Instagram only lets the API delete media on some accounts. If the delete is
-refused, the old post is left up, the id is reported, and nothing is
-republished for it, so the grid never shows the same post twice.
+Instagram refuses API deletes for this account, so delete the old post in
+the app first. If the API delete is refused and the post still exists, the id
+is reported and nothing is republished for it, so the grid never shows the
+same post twice.
 
 Usage: python3 scripts/replace.py nx-d01,nx-d03,nx-d04
 """
@@ -19,7 +20,7 @@ import urllib.parse
 import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from publish import (GRAPH, TOKEN, load, page_token, publish_facebook,  # noqa: E402
+from publish import (GRAPH, TOKEN, api, load, page_token, publish_facebook,  # noqa: E402
                      publish_instagram, save)
 from datetime import datetime, timezone  # noqa: E402
 
@@ -31,6 +32,14 @@ def delete(obj, tok):
             return r.read().decode()
     except urllib.error.HTTPError as e:
         raise RuntimeError(f"Graph API {e.code} deleting {obj}: {e.read().decode(errors='replace')}") from None
+
+
+def ig_exists(mid):
+    try:
+        api(mid, {"fields": "id"})
+        return True
+    except RuntimeError as exc:
+        return "does not exist" not in str(exc) and "Unsupported get request" not in str(exc)
 
 
 def main():
@@ -54,9 +63,11 @@ def main():
                 delete(rec["ig_media_id"], TOKEN)
                 print(f"DEL   {pid} instagram {rec['ig_media_id']}")
             except Exception as exc:
-                print(f"FAIL  {pid}: {exc}", file=sys.stderr)
-                failures += 1
-                continue
+                if ig_exists(rec["ig_media_id"]):
+                    print(f"FAIL  {pid}: still on Instagram, delete it in the app first ({exc})", file=sys.stderr)
+                    failures += 1
+                    continue
+                print(f"GONE  {pid} instagram {rec['ig_media_id']} (deleted in the app)")
             for k in ("ig_media_id", "ig_published_utc"):
                 rec.pop(k, None)
             save(published, pub_path)

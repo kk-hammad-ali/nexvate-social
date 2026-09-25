@@ -76,7 +76,10 @@ def main():
 
     if "--cancel" in sys.argv or "--cancel-all" in sys.argv:
         if "--cancel-all" in sys.argv:
-            ids = [r["id"] for r in published["posts"] if r.get("fb_post_id") and not r.get("fb_published_utc")]
+            now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            future = {e["id"] for e in sched["posts"] if e["publish_at_utc"] > now}
+            ids = [r["id"] for r in published["posts"]
+                   if r.get("fb_post_id") and not r.get("fb_published_utc") and r["id"] in future]
         else:
             ids = [sys.argv[sys.argv.index("--cancel") + 1]]
         tok = page_token(page)
