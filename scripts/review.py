@@ -74,10 +74,11 @@ def b_covers():
 
 
 def grid(name, title, note, tiles):
+    shown = FEED_DAYS[:len(FEED_DAYS) // 3 * 3]   # a whole number of rows
     cells = "".join(
         f'<div class="t"><img src="{tiles[d]}" style="{"object-position:center" if d in REELS else ""}"></div>'
-        for d in reversed(FEED_DAYS))
-    rows = -(-len(FEED_DAYS) // 3)
+        for d in reversed(shown))
+    rows = len(shown) // 3
     tw, th = 360, 480
     doc = f"""<!doctype html><html><head><meta charset="utf-8"><style>{SHEET_CSS}
 .g{{display:grid;grid-template-columns:repeat(3,{tw}px);gap:3px;width:{tw * 3 + 6}px}}
@@ -155,8 +156,8 @@ def main():
             os.remove(os.path.join(REV, f))
     tiles = feed_tiles()
     grid("00-grid-A.png", "Option A: light sides, gradient centre (rendered)",
-         "The profile on day 30, newest top-left. The stripe stays vertical all month and sits in the centre after "
-         "days 1, 4, 8, 11, 14, 17, 21, 24, 27 and 30. On the days between, it's one column to the side.", tiles)
+         "The profile after 27 posts (21 Oct), newest top-left. Launch day posts 3, so the grid opens on a full row. The stripe is centred "
+         "whenever the grid is whole rows: launch day, then every 3rd post. On the days between it sits one column over.", tiles)
     grid("00-grid-B.png", "Option B: gradient sides, light centre (preview only)",
          "The same grid with the alternative pattern. Two thirds of the tiles are dark.", b_covers())
     day_sheets()

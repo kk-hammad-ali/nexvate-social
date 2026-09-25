@@ -712,13 +712,13 @@ for _p in POSTS:
     _p["topic"] = TOPICS[_p["day"]]
 
 # ── Grid colour pattern ──────────────────────────────────────────────────
-# Instagram shows the feed in 3 columns, newest top-left. The Reels (days 2,
-# 12, 18, 26) sit on the grid too; the two Story days (7, 19) don't. Every 3rd
-# post in feed order is the "centre" tile, counted so that on day 30 (28 feed
-# posts) it lands in the middle column. Adding one post shifts the whole grid
-# one place, so a 3-post repeat always reads as vertical stripes. The stripe
-# is dead centre after feed posts 1, 4, 7 ... 28 (days 1, 4, 8, 11, 14, 17,
-# 21, 24, 27, 30) and one column over on the days in between.
+# Instagram shows the feed in 3 columns, newest top-left. The Reels sit on the
+# grid too; the two Story days (7, 19) don't. Launch day posts 3 at once (days
+# 1, 3, 4, the ready designs; the day-2 Reel follows the next day) so the
+# profile opens on a full row, then it's 1 a day. Every 3rd post in feed order
+# (k = 2, 5, 8 ...) is the centre tile, so each time the grid is a whole
+# number of rows (launch day, then every 3rd post) the stripe is dead centre.
+# In between it sits one column over.
 #
 # GRID_MODE "A": light sides, gradient centre (default).
 # GRID_MODE "B": gradient sides, light centre.
@@ -734,12 +734,12 @@ REELS = {
     18: dict(pillar="Development", topic="Service spotlight: AI & Automation (WhatsApp bots)", plan_bg="powder"),
     26: dict(pillar="Engagement", topic="Day-in-the-life / behind the scenes", plan_bg="cloud"),
 }
-FEED_DAYS = sorted([p["day"] for p in POSTS] + list(REELS))
+LAUNCH = [1, 3, 4]   # posted together on launch day, in this order
+FEED_DAYS = LAUNCH + sorted(d for d in [p["day"] for p in POSTS] + list(REELS) if d not in LAUNCH)
 
 
 def is_centre(day):
-    k = FEED_DAYS.index(day) + 1
-    return (len(FEED_DAYS) - k) % 3 == 1
+    return (FEED_DAYS.index(day) + 1) % 3 == 2
 
 
 def grid_bg(day, plan_bg, mode=None):

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Build state/schedule.json from content/posts.py.
 
-Day 1 is Friday 25 September 2026. Every post gets a Dubai-time slot picked for
+Launch is Friday 25 September 2026. Days 1, 3 and 4 go up together that
+evening, a minute apart, so the grid opens on a full row. The day-2 Reel follows
+on the 26th and every later plan day runs one calendar day early (day 5 on the
+27th ... day 30 on 22 October). Every post gets a Dubai-time slot picked for
 when a UAE audience is actually on Instagram and Facebook:
 
   Mon-Thu  20:00  after work and the commute - the evening scroll peak
@@ -28,7 +31,7 @@ from datetime import date, datetime, time, timedelta, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "content"))
-from posts import FEED_DAYS, POSTS, REELS, link  # noqa: E402
+from posts import FEED_DAYS, LAUNCH, POSTS, REELS, link  # noqa: E402
 from stories import AM, ASK  # noqa: E402
 
 DAY1 = date(2026, 9, 25)
@@ -41,6 +44,21 @@ IG_USER_ID = "17841441428644524"   # @nexvate.ae
 FB_PAGE_ID = "1201189833088043"    # Nexvate
 
 
+def cal_date(day):
+    """Calendar date of a plan day: launch trio on DAY1, the day-2 Reel next."""
+    if day in LAUNCH:
+        return DAY1
+    return DAY1 + timedelta(days=1 if day == 2 else day - 3)
+
+
+def post_time(day):
+    d = cal_date(day)
+    t = datetime.combine(d, SLOTS[d.weekday()], GST)
+    if day in LAUNCH:
+        t += timedelta(minutes=LAUNCH.index(day))
+    return t
+
+
 def caption(post, platform):
     cta = post["cta_ig"] if platform == "ig" else post["cta_fb"]
     text = post["caption"].replace("{CTA}", cta).replace("{LINK}", link(post["path"], post["day"]))
@@ -51,8 +69,7 @@ def caption(post, platform):
 def main():
     posts = []
     for p in POSTS:
-        d = DAY1 + timedelta(days=p["day"] - 1)
-        local = datetime.combine(d, SLOTS[d.weekday()], GST)
+        local = post_time(p["day"])
         n = len(p["slides"])
         posts.append({
             "id": f"nx-d{p['day']:02d}",
@@ -69,11 +86,18 @@ def main():
             "publish_at_utc": local.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         })
     stories = []
+    launch_push = post_time(LAUNCH[0]) + timedelta(minutes=30)
     for day in range(1, 31):
-        d = DAY1 + timedelta(days=day - 1)
-        frames = [("am", datetime.combine(d, time(9, 0), GST), True, None, AM[day]["hl"])]
-        if day in FEED_DAYS:
-            push = datetime.combine(d, SLOTS[d.weekday()], GST) + timedelta(minutes=30)
+        d = cal_date(day)
+        if day in LAUNCH:
+            # Launch evening: one push for the launch post, then the three
+            # Highlight frames straight after it (09:00 has already passed).
+            frames = [] if day != LAUNCH[0] else [("push", launch_push, True, f"nx-d{day:02d}", None)]
+            frames.append(("am", launch_push + timedelta(minutes=1 + LAUNCH.index(day)), True, None, AM[day]["hl"]))
+        else:
+            frames = [("am", datetime.combine(d, time(9, 0), GST), True, None, AM[day]["hl"])]
+        if day in FEED_DAYS and day not in LAUNCH:
+            push = post_time(day) + timedelta(minutes=30)
             frames.append(("push", push, day not in REELS, None if day in REELS else f"nx-d{day:02d}", None))
         if day in ASK:
             frames.append(("ask", datetime.combine(d, SLOTS[d.weekday()], GST), False, None, None))
