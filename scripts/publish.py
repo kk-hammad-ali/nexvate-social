@@ -106,7 +106,7 @@ def media_publish(ig, cid, tries=5):
     """Instagram can report FINISHED and still refuse the publish (9007) for a few seconds."""
     for n in range(tries):
         try:
-            return media_publish(ig, cid)
+            return api(f"{ig}/media_publish", data={"creation_id": cid})["id"]
         except RuntimeError as exc:
             if '"code":9007' not in str(exc) or n == tries - 1:
                 raise
