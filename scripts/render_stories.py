@@ -113,14 +113,14 @@ def push_frame(day):
     reel = day in REELS
     img = f"../../media/reels/r{day:02d}-cover.jpg" if reel else f"../../media/d{day:02d}-1.jpg"
     head = "New reel." if reel else "New on the feed."
-    body = (f'<div class="kicker">Day {day:02d}</div><div class="body"><h1>{head}</h1>'
+    body = (f'<div class="body"><h1>{head}</h1>'
             f'<div class="card"><img src="{img}"></div><p class="hint">Tap @nexvate.ae to see it</p></div>'
             + bottom("nexvate.ae"))
     return shoot(page("gradient", body, "story push"), f"s{day:02d}-push", "stories")
 
 
 def ask_frame(day, a):
-    body = (f'<div class="kicker">Day {day:02d} · {a["kind"]}</div><div class="body ask">'
+    body = (f'<div class="kicker">{a["kind"]}</div><div class="body ask">'
             f'<h1>{e(a["title"])}</h1><div class="vote">{"Vote" if a["kind"] == "Poll" else "Take a guess"} ↓</div></div>'
             + bottom("nexvate.ae"))
     return shoot(page("sky", body, "story"), f"s{day:02d}-ask", "stories")
@@ -128,8 +128,8 @@ def ask_frame(day, a):
 
 def reel_cover(r):
     long = " long" if len(r["topic"]) > 40 else ""
-    body = (f'<div class="kicker">Day {r["day"]:02d} · {e(r["pillar"])}</div>'
-            f'<div class="body tile{long}"><h1>{e(r["topic"])}</h1></div>' + bottom("Reel"))
+    body = (f'<div class="body tile{long}"><h1>{e(r["topic"])}</h1></div>'
+            + '<div class="bottom"><span></span>{RING}</div>')
     return shoot(page(r["bg"], body, "reel"), f"r{r['day']:02d}-cover", "reels")
 
 

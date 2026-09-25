@@ -19,10 +19,10 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "publish | schedule-facebook | list-facebook | cancel-facebook | dry-run | post | story"
+        description: "publish | schedule-facebook | list-facebook | cancel-facebook | dry-run | post | story | replace"
         default: publish
       id:
-        description: "post or story id for mode=post/story (e.g. nx-d05, nx-s02-push)"
+        description: "post or story id for mode=post/story (e.g. nx-d05, nx-s02-push); comma list for replace"
         default: ""
 
 permissions:
@@ -58,6 +58,7 @@ jobs:
             dry-run)           DRY_RUN=1 python3 scripts/publish.py && python3 scripts/schedule_facebook.py ;;
             post)              python3 scripts/publish.py --post "${{ inputs.id }}" ;;
             story)             python3 scripts/publish.py --story "${{ inputs.id }}" ;;
+            replace)           python3 scripts/replace.py "${{ inputs.id }}" ;;
             *) echo "unknown mode $mode"; exit 1 ;;
           esac
       - name: Save state

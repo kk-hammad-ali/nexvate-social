@@ -31,8 +31,8 @@ BG = {
     "gradient": "linear-gradient(135deg,#00154D 0%,#062E86 50%,#0E53C5 100%)",
 }
 
-# The plan's grid tile, scaled to 1080x1350: DAY/PILLAR kicker, bold headline,
-# format label bottom-left, and the open ring (the node) bottom-right.
+# The plan's grid tile, scaled to 1080x1350: bold headline and the open ring
+# (the node) bottom-right. No day/pillar kicker or format label on the image.
 RING = '<svg class="ring" width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="18" fill="none" stroke="{c}" stroke-width="5.5"/></svg>'
 
 CSS = """
@@ -43,7 +43,7 @@ html,body{width:1080px;height:1350px;overflow:hidden}
 body{background:var(--bg);color:var(--ink);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
 .frame{position:absolute;inset:0;padding:112px 96px 100px;display:flex;flex-direction:column}
 .kicker{font-family:Inter;font-weight:700;font-size:31px;letter-spacing:.06em;text-transform:uppercase;color:var(--kick)}
-.body{flex:1;display:flex;flex-direction:column;padding-top:44px}
+.body{flex:1;display:flex;flex-direction:column;padding-top:0}
 h1{font-family:Manrope;font-weight:800;letter-spacing:-.02em;line-height:1.12;color:var(--ink)}
 .tile h1{font-size:96px;max-width:880px}
 .tile.long h1{font-size:86px}
@@ -90,10 +90,7 @@ def plain_len(s):
 
 def slide_html(post, idx, slide):
     v = DARK if post["bg"] == "gradient" else LIGHT
-    total = len(post["slides"])
     t = slide["t"]
-    fmt = "Carousel" if total > 1 else "Single"
-    kicker = f"Day {post['day']:02d} · {post['pillar']}"
 
     # Slide 1 is the plan's grid tile: its topic, word for word, as the headline.
     if idx == 0:
@@ -125,15 +122,13 @@ def slide_html(post, idx, slide):
     else:
         raise ValueError(f"day {post['day']}: {t} slide can't be an inner slide")
 
-    label = fmt if idx == 0 else f"{fmt} · {idx + 1}/{total}"
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 :root{{--bg:{BG[post['bg']]};--ink:{v['ink']};--muted:{v['muted']};--accent:{v['accent']};--kick:{v['kick']};
 --fmt:{v['fmt']};--rule:{v['rule']}}}
 {CSS}</style></head><body>
 <div class="frame">
-  <div class="kicker">{e(kicker)}</div>
   <div class="body {cls}">{inner}</div>
-  <div class="bottom"><span class="fmt">{label}</span>{RING.format(c=v['ring'])}</div>
+  <div class="bottom"><span></span>{RING.format(c=v['ring'])}</div>
 </div></body></html>"""
 
 
