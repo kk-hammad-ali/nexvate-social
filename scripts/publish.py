@@ -102,6 +102,17 @@ def wait_ready(cid, timeout=300):
     raise RuntimeError(f"container {cid} not ready after {timeout}s")
 
 
+def media_publish(ig, cid, tries=5):
+    """Instagram can report FINISHED and still refuse the publish (9007) for a few seconds."""
+    for n in range(tries):
+        try:
+            return media_publish(ig, cid)
+        except RuntimeError as exc:
+            if '"code":9007' not in str(exc) or n == tries - 1:
+                raise
+            time.sleep(10 * (n + 1))
+
+
 def publish_instagram(e):
     ig = e["ig_user_id"]
     if e["media_type"] == "CAROUSEL":
@@ -114,7 +125,7 @@ def publish_instagram(e):
     else:
         cid = api(f"{ig}/media", data={"image_url": e["media"][0], "caption": e["caption_ig"]})["id"]
     wait_ready(cid)
-    return api(f"{ig}/media_publish", data={"creation_id": cid})["id"]
+    return media_publish(ig, cid)
 
 
 def publish_facebook(e):
@@ -137,7 +148,7 @@ def publish_ig_story(s):
     ig = s["ig_user_id"]
     cid = api(f"{ig}/media", data={"media_type": "STORIES", "image_url": s["media"]})["id"]
     wait_ready(cid)
-    return api(f"{ig}/media_publish", data={"creation_id": cid})["id"]
+    return media_publish(ig, cid)
 
 
 def publish_fb_story(s):
