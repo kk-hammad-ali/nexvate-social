@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build state/schedule.json from content/posts.py.
 
-Day 1 is Monday 28 September 2026. Every post gets a Dubai-time slot picked for
+Day 1 is Friday 25 September 2026. Every post gets a Dubai-time slot picked for
 when a UAE audience is actually on Instagram and Facebook:
 
   Mon-Thu  20:00  after work and the commute - the evening scroll peak
@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.join(ROOT, "content"))
 from posts import FEED_DAYS, POSTS, REELS, link  # noqa: E402
 from stories import AM, ASK  # noqa: E402
 
-DAY1 = date(2026, 9, 28)
+DAY1 = date(2026, 9, 25)
 GST = timezone(timedelta(hours=4))
 SLOTS = {0: time(20, 0), 1: time(20, 0), 2: time(20, 0), 3: time(20, 0),
          4: time(19, 0), 5: time(12, 0), 6: time(20, 0)}

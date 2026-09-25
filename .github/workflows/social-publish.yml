@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "publish | schedule-facebook | list-facebook | dry-run | post | story"
+        description: "publish | schedule-facebook | list-facebook | cancel-facebook | dry-run | post | story"
         default: publish
       id:
         description: "post or story id for mode=post/story (e.g. nx-d05, nx-s02-push)"
@@ -53,6 +53,7 @@ jobs:
             publish)           python3 scripts/publish.py ;;
             schedule-facebook) python3 scripts/schedule_facebook.py --apply ;;
             list-facebook)     python3 scripts/schedule_facebook.py --list ;;
+            cancel-facebook)   python3 scripts/schedule_facebook.py --cancel-all ;;
             dry-run)           DRY_RUN=1 python3 scripts/publish.py && python3 scripts/schedule_facebook.py ;;
             post)              python3 scripts/publish.py --post "${{ inputs.id }}" ;;
             story)             python3 scripts/publish.py --story "${{ inputs.id }}" ;;

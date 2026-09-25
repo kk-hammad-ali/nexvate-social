@@ -19,6 +19,7 @@ Usage:
   python3 scripts/schedule_facebook.py --apply    # schedule everything in range
   python3 scripts/schedule_facebook.py --list     # Facebook's scheduled posts for the Page
   python3 scripts/schedule_facebook.py --cancel nx-d05
+  python3 scripts/schedule_facebook.py --cancel-all   # e.g. before moving the dates
 """
 
 import json
@@ -73,18 +74,33 @@ def main():
         print(f"{len(res.get('data', []))} scheduled on Facebook")
         return 0
 
-    if "--cancel" in sys.argv:
-        pid = sys.argv[sys.argv.index("--cancel") + 1]
-        rec = by_id.get(pid)
-        if not rec or not rec.get("fb_post_id") or rec.get("fb_published_utc"):
-            print(f"{pid} has no pending Facebook schedule", file=sys.stderr)
-            return 1
-        delete(rec["fb_post_id"], page_token(page))
-        for k in ("fb_post_id", "fb_scheduled_utc"):
-            rec.pop(k, None)
-        save(published, pub_path)
-        print(f"cancelled {pid}")
-        return 0
+    if "--cancel" in sys.argv or "--cancel-all" in sys.argv:
+        if "--cancel-all" in sys.argv:
+            ids = [r["id"] for r in published["posts"] if r.get("fb_post_id") and not r.get("fb_published_utc")]
+        else:
+            ids = [sys.argv[sys.argv.index("--cancel") + 1]]
+        tok = page_token(page)
+        failures = 0
+        for pid in ids:
+            rec = by_id.get(pid)
+            if not rec or not rec.get("fb_post_id") or rec.get("fb_published_utc"):
+                print(f"{pid} has no pending Facebook schedule", file=sys.stderr)
+                failures += 1
+                continue
+            fid = rec["fb_post_id"]
+            if "_" not in fid:   # single photos come back as a photo id
+                fid = f"{page}_{fid}"
+            try:
+                delete(fid, tok)
+            except Exception as exc:
+                failures += 1
+                print(f"FAIL  cancel {pid}: {exc}", file=sys.stderr)
+                continue
+            for k in ("fb_post_id", "fb_scheduled_utc"):
+                rec.pop(k, None)
+            save(published, pub_path)
+            print(f"cancelled {pid}")
+        return 1 if failures else 0
 
     apply = "--apply" in sys.argv
     now = datetime.now(timezone.utc)
