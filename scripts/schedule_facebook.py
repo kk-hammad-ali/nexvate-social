@@ -83,6 +83,13 @@ def main():
             print(f"{p['id']}  {p.get('created_time')}  {(p.get('message') or '')[:60]!r}")
         return 0
 
+    if "--ig-feed" in sys.argv:
+        ig = sched["posts"][0]["ig_user_id"]
+        res = api(f"{ig}/media", {"fields": "id,timestamp,caption", "limit": 10})
+        for m in res.get("data", []):
+            print(f"IG {m['id']}  {m.get('timestamp')}  {(m.get('caption') or '')[:60]!r}")
+        return 0
+
     if "--delete" in sys.argv:
         tok = page_token(page)
         failures = 0
