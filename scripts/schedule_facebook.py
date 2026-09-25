@@ -20,6 +20,8 @@ Usage:
   python3 scripts/schedule_facebook.py --list     # Facebook's scheduled posts for the Page
   python3 scripts/schedule_facebook.py --cancel nx-d05
   python3 scripts/schedule_facebook.py --cancel-all   # e.g. before moving the dates
+  python3 scripts/schedule_facebook.py --feed         # the Page's published posts
+  python3 scripts/schedule_facebook.py --delete <page_post_id>[,<id>...]
 """
 
 import json
@@ -73,6 +75,25 @@ def main():
             print(f"{p['id']}  {p.get('scheduled_publish_time')}  {(p.get('message') or '')[:60]!r}")
         print(f"{len(res.get('data', []))} scheduled on Facebook")
         return 0
+
+    if "--feed" in sys.argv:
+        tok = page_token(page)
+        res = api(f"{page}/published_posts", {"fields": "id,created_time,message", "limit": 50}, token=tok)
+        for p in res.get("data", []):
+            print(f"{p['id']}  {p.get('created_time')}  {(p.get('message') or '')[:60]!r}")
+        return 0
+
+    if "--delete" in sys.argv:
+        tok = page_token(page)
+        failures = 0
+        for fid in sys.argv[sys.argv.index("--delete") + 1].split(","):
+            try:
+                delete(fid, tok)
+                print(f"deleted {fid}")
+            except Exception as exc:
+                failures += 1
+                print(f"FAIL  delete {fid}: {exc}", file=sys.stderr)
+        return 1 if failures else 0
 
     if "--cancel" in sys.argv or "--cancel-all" in sys.argv:
         if "--cancel-all" in sys.argv:
