@@ -34,169 +34,127 @@
       "id": "nx-d05",
       "media_type": "CAROUSEL",
       "images": 5,
-      "scheduled_gst": "Fri 02 Oct 2026 19:00",
-      "fb_post_id": "1201189833088043_122113600515453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Fri 02 Oct 2026 19:00"
     },
     {
       "id": "nx-d06",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Sat 03 Oct 2026 12:00",
-      "fb_post_id": "122113600581453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Sat 03 Oct 2026 12:00"
     },
     {
       "id": "nx-d08",
       "media_type": "CAROUSEL",
       "images": 5,
-      "scheduled_gst": "Mon 05 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113600869453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Mon 05 Oct 2026 20:00"
     },
     {
       "id": "nx-d09",
       "media_type": "CAROUSEL",
       "images": 5,
-      "scheduled_gst": "Tue 06 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113601325453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Tue 06 Oct 2026 20:00"
     },
     {
       "id": "nx-d10",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Wed 07 Oct 2026 20:00",
-      "fb_post_id": "122113601391453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Wed 07 Oct 2026 20:00"
     },
     {
       "id": "nx-d11",
       "media_type": "CAROUSEL",
       "images": 7,
-      "scheduled_gst": "Thu 08 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113601769453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Thu 08 Oct 2026 20:00"
     },
     {
       "id": "nx-d13",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Sat 10 Oct 2026 12:00",
-      "fb_post_id": "122113601853453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Sat 10 Oct 2026 12:00"
     },
     {
       "id": "nx-d14",
       "media_type": "CAROUSEL",
       "images": 6,
-      "scheduled_gst": "Sun 11 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113602219453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Sun 11 Oct 2026 20:00"
     },
     {
       "id": "nx-d15",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Mon 12 Oct 2026 20:00",
-      "fb_post_id": "122113602435453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Mon 12 Oct 2026 20:00"
     },
     {
       "id": "nx-d16",
       "media_type": "CAROUSEL",
       "images": 6,
-      "scheduled_gst": "Tue 13 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113602861453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Tue 13 Oct 2026 20:00"
     },
     {
       "id": "nx-d17",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Wed 14 Oct 2026 20:00",
-      "fb_post_id": "122113603119453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Wed 14 Oct 2026 20:00"
     },
     {
       "id": "nx-d20",
       "media_type": "CAROUSEL",
       "images": 5,
-      "scheduled_gst": "Sat 17 Oct 2026 12:00",
-      "fb_post_id": "1201189833088043_122113603479453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Sat 17 Oct 2026 12:00"
     },
     {
       "id": "nx-d21",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Sun 18 Oct 2026 20:00",
-      "fb_post_id": "122113603533453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Sun 18 Oct 2026 20:00"
     },
     {
       "id": "nx-d22",
       "media_type": "CAROUSEL",
       "images": 5,
-      "scheduled_gst": "Mon 19 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113603989453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Mon 19 Oct 2026 20:00"
     },
     {
       "id": "nx-d23",
       "media_type": "CAROUSEL",
       "images": 7,
-      "scheduled_gst": "Tue 20 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113604691453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Tue 20 Oct 2026 20:00"
     },
     {
       "id": "nx-d24",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Wed 21 Oct 2026 20:00",
-      "fb_post_id": "122113604739453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Wed 21 Oct 2026 20:00"
     },
     {
       "id": "nx-d25",
       "media_type": "CAROUSEL",
       "images": 6,
-      "scheduled_gst": "Thu 22 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113605363453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Thu 22 Oct 2026 20:00"
     },
     {
       "id": "nx-d27",
       "media_type": "IMAGE",
       "images": 1,
-      "scheduled_gst": "Sat 24 Oct 2026 12:00",
-      "fb_post_id": "122113605405453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Sat 24 Oct 2026 12:00"
     },
     {
       "id": "nx-d28",
       "media_type": "CAROUSEL",
       "images": 6,
-      "scheduled_gst": "Tue 20 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113605813453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Tue 20 Oct 2026 20:00"
     },
     {
       "id": "nx-d29",
       "media_type": "CAROUSEL",
       "images": 5,
-      "scheduled_gst": "Wed 21 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113606371453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Wed 21 Oct 2026 20:00"
     },
     {
       "id": "nx-d30",
       "media_type": "CAROUSEL",
       "images": 5,
-      "scheduled_gst": "Thu 22 Oct 2026 20:00",
-      "fb_post_id": "1201189833088043_122113606905453435",
-      "fb_scheduled_utc": "2026-09-25T18:51:58Z"
+      "scheduled_gst": "Thu 22 Oct 2026 20:00"
     }
   ],
   "stories": [
