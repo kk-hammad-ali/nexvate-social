@@ -56,7 +56,7 @@ jobs:
             sleep $(( 300 - now % 300 + 5 ))
           done
       - name: Start the next loop
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && vars.PAUSED != '1' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run social-loop.yml -R "${{ github.repository }}"

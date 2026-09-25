@@ -69,4 +69,5 @@ jobs:
           for st in in_progress queued; do
             n=$(( n + $(gh run list -R "${{ github.repository }}" -w social-loop.yml -s $st --json databaseId -q length) ))
           done
+          if [ "$PAUSED" = "1" ]; then echo "paused: loop not restarted"; exit 0; fi
           if [ "$n" -eq 0 ]; then gh workflow run social-loop.yml -R "${{ github.repository }}"; echo "loop restarted"; else echo "loop running"; fi
